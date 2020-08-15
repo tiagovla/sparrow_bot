@@ -7,7 +7,8 @@ services:
       - env/bot.env
     volumes: 
       - ./bot:/app
-    command: [ "python", "./bot.py" ]
+      - ./bot/logs:/app/logs
+    command: [ "python", "./manage.py", "runbot"]
 
   redis:
     image: redis:latest
