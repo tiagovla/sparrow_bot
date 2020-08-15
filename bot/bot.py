@@ -18,10 +18,26 @@ else:
 class SparrowBot(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix='!', fetch_offline_members=False)
+        self.loop.run_until_complete(self._setup())
     
     async def on_ready(self):
         self.remove_command('help')
         print(f'{self.user} has connected.')
+        
+    async def _setup(self):
+        self.load_cogs()
+        
+    def load_cogs(self):
+        try:
+            for filename in os.listdir('./cogs'):
+                if filename.endswith('.py'):
+                    try:
+                        self.load_extension(f'cogs.{filename[:-3]}')
+                        print(f"Extension {filename} was loaded.")
+                    except ExtensionFailed as e:
+                        print(f"Failed to load extension {filename} - Error: {e}")
+        except FileNotFoundError:
+            print("No cogs to load.")
         
     async def on_message(self, message):
         if message.author.bot:
